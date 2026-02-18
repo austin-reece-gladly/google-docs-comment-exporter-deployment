@@ -36,19 +36,28 @@ The Google Docs Comment Exporter is a lightweight Apps Script tool that extracts
 ## Quick Start
 
 1. **For End Users:** See [Installation Guide](docs/installation-guide.md) for step-by-step setup
-2. **For IT Teams:** See [IT Deployment Guide](docs/it-deployment-guide.md) for bulk deployment
+2. **For IT Teams:** See [IT Setup Guide](docs/it-setup-guide.md) for technical deployment
 3. **For Using the Tool:** See [User Guide](docs/user-guide.md) for export instructions
+
+## Documentation
+
+- **[Installation Guide](docs/installation-guide.md)** - Step-by-step installation for end users
+- **[User Guide](docs/user-guide.md)** - How to use the exporter, tips, and best practices
+- **[IT Setup Guide](docs/it-setup-guide.md)** - Technical setup for IT teams (Phase 1 & 2)
+- **[IT Deployment Guide](docs/it-deployment-guide.md)** - Complete organizational rollout playbook (optional)
 
 ## Project Structure
 
 ```
 google-doc-comment-export/
 ├── src/
-│   └── comment-exporter-MARKDOWN.js    # Main script (copy to Apps Script)
+│   ├── comment-exporter-MARKDOWN.js    # Main script (copy to Apps Script)
+│   └── appsscript.json                 # Add-on manifest (Phase 2)
 ├── docs/
-│   ├── installation-guide.md           # End-user installation steps
-│   ├── it-deployment-guide.md          # IT deployment guide
-│   └── user-guide.md                   # How to use the exporter
+│   ├── installation-guide.md           # End-user installation (Phase 1)
+│   ├── user-guide.md                   # How to use the exporter
+│   ├── it-setup-guide.md              # IT technical setup (Phase 1 & 2)
+│   └── it-deployment-guide.md          # Full rollout playbook (optional)
 ├── examples/
 │   ├── export-dialog.html              # Reference: styled download dialog
 │   └── *.js                            # Legacy versions for reference

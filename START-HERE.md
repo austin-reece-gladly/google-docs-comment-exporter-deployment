@@ -19,20 +19,21 @@
 
 ### 🛠️ I'm IT/Support (deploying this to the company)
 
-**Start:** [PROJECT-SUMMARY.md](PROJECT-SUMMARY.md) (executive overview)
-- Understand the project
-- See timeline and resources needed
-- Review success metrics
+**Start:** [docs/it-setup-guide.md](docs/it-setup-guide.md) (technical setup)
+- Phase 1: Manual installation setup
+- Phase 2: Google Workspace Add-on deployment
+- Step-by-step technical configuration
+- Troubleshooting and support
 
-**Then:** [docs/it-deployment-guide.md](docs/it-deployment-guide.md) (comprehensive playbook)
-- Week-by-week deployment plan
-- Email templates and communication strategy
-- Support infrastructure setup
-- Everything you need to roll this out
+**Optional:** [docs/it-deployment-guide.md](docs/it-deployment-guide.md) (organizational rollout)
+- Full company-wide deployment playbook
+- Communication templates and training plans
+- Metrics and tracking frameworks
+- Use if rolling out to 50+ people
 
-**Track progress:** [DEPLOYMENT-CHECKLIST.md](DEPLOYMENT-CHECKLIST.md)
-- Check off tasks as you complete them
-- Track pilot → beta → company-wide rollout
+**For Project Management:** [PROJECT-SUMMARY.md](PROJECT-SUMMARY.md)
+- Executive overview and ROI
+- Timeline and resource requirements
 
 ---
 
@@ -157,13 +158,14 @@ Month 3+: Phase 2 - Add-on (if approved)
 | **START-HERE.md** | This file - navigation hub | Everyone |
 | **QUICK-START.md** | 1-page installation guide | End users |
 | **README.md** | Project overview | Everyone |
+| **docs/installation-guide.md** | Detailed install steps | End users |
+| **docs/user-guide.md** | Usage tips & tricks | End users |
+| **docs/it-setup-guide.md** | Technical setup (Phase 1 & 2) | IT teams |
+| **docs/it-deployment-guide.md** | Full rollout playbook (optional) | IT teams, PMs |
 | **PROJECT-SUMMARY.md** | Executive overview & timeline | IT, PMs, Leadership |
 | **DEPLOYMENT-CHECKLIST.md** | Task tracking | IT, PMs |
 | **IMPLEMENTATION-COMPLETE.md** | What's delivered & status | IT, PMs |
 | **MOVE-FILES-INSTRUCTIONS.md** | File migration guide | IT |
-| **docs/installation-guide.md** | Detailed install steps | End users |
-| **docs/user-guide.md** | Usage tips & tricks | End users |
-| **docs/it-deployment-guide.md** | Complete deployment playbook | IT teams |
 
 ---
 
