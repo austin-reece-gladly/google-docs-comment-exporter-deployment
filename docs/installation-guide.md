@@ -25,7 +25,12 @@ Before you begin, make sure you have:
 2. Select **Apps Script**
 3. A new tab will open showing the Apps Script editor
 
-   ![Apps Script Menu Location](https://i.imgur.com/placeholder.png)
+   **📍 Menu Location:**
+   ```
+   File  Edit  View  Insert  Format  Tools  Extensions  Help
+                                            ↑
+                                      Click here, then select "Apps Script"
+   ```
 
    > **Note:** If you don't see "Apps Script" in the Extensions menu, contact your IT administrator - this feature may be disabled in your organization.
 
@@ -60,9 +65,18 @@ This is a critical step - the script needs access to Google Drive to save your e
 5. In the Version dropdown, select **v3** (latest version)
 6. Click **Add** to confirm
 
-   ![Adding Drive API Service](https://i.imgur.com/placeholder.png)
+   **📍 What to Look For:**
+   ```
+   Left Sidebar in Apps Script Editor:
 
-   > **Tip:** After adding, you should see "Drive" listed under Services in the left sidebar.
+   📁 Files
+      └─ Code.gs
+
+   ⚙️ Services  ⊕  ← Click this plus icon
+      └─ (After adding) Drive - v3
+   ```
+
+   > **Tip:** After adding, you should see "Drive" listed under Services in the left sidebar with "v3" next to it.
 
 ### Step 7: Save the Script
 
@@ -91,7 +105,20 @@ After refreshing, check your Google Docs menu bar:
    - "Export All Comments to Markdown"
    - "Export Open Comments to Markdown"
 
-   ![Comment Exporter Menu](https://i.imgur.com/placeholder.png)
+   **📍 Success Indicator:**
+   ```
+   Google Docs Menu Bar:
+
+   File  Edit  View  Insert  Format  Tools  Extensions  Comment Exporter  Help
+                                                        ↑
+                                                   New menu appears here!
+
+   Click it to see:
+   ┌─────────────────────────────────────┐
+   │ Export All Comments to Markdown     │
+   │ Export Open Comments to Markdown    │
+   └─────────────────────────────────────┘
+   ```
 
 3. ✅ **Success!** The tool is now installed and ready to use.
 
