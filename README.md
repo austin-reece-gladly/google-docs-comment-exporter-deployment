@@ -1,6 +1,10 @@
 # Google Docs Comment Exporter
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **Export Google Docs comments to AI-ready markdown format**
+
+> **Open Source Deployment Framework:** This repository contains comprehensive documentation and strategies for deploying the Google Docs Comment Exporter across medium-sized organizations (50-500 people). The deployment playbooks, guides, and templates are freely available under the MIT License.
 
 ## Overview
 
@@ -77,21 +81,38 @@ google-doc-comment-export/
 ## Support
 
 - **Documentation:** See `/docs` folder for comprehensive guides
-- **Issues:** Contact your IT support team
-- **Feature Requests:** Submit through your company's feedback channel
+- **Issues:** [Open an issue](https://github.com/austin-reece-gladly/google-docs-comment-exporter-deployment/issues) on GitHub
+- **Questions:** [Start a discussion](https://github.com/austin-reece-gladly/google-docs-comment-exporter-deployment/discussions)
+- **Feature Requests:** Submit via GitHub issues
 
 ## Version History
 
 - **v1.0** - Initial markdown exporter with dual export modes
-- Clean markdown output optimized for AI tools
-- Styled download dialog with Google Drive integration
+  - Clean markdown output optimized for AI tools
+  - Styled download dialog with Google Drive integration
+  - Complete deployment documentation and strategy
+
+## Contributing
+
+Contributions are welcome! This project includes:
+- Deployment strategies and playbooks
+- Installation and user guides
+- Email templates and communication plans
+- Success metrics frameworks
+
+Feel free to:
+- Submit improvements to documentation
+- Share your deployment experiences
+- Suggest enhancements to the rollout strategy
+- Report issues or gaps in the guides
 
 ## License
 
-Internal tool for company use. Not for external distribution.
+MIT License - see [LICENSE](LICENSE) file for details.
+
+Copyright (c) 2026 Austin Reece
 
 ---
 
-**Made for:** Scaling across 50-500 person organization
-**Maintained by:** [Your IT Team]
+**Purpose:** Deployment framework for scaling across 50-500 person organizations
 **Last Updated:** February 2026
