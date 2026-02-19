@@ -1,127 +1,153 @@
 # Google Docs Comment Exporter
 
+Export all comments from a Google Doc to AI-ready markdown format with one click.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Export Google Docs comments to AI-ready markdown format**
+## What It Does
 
-> **Open Source Deployment Framework:** This repository contains comprehensive documentation and strategies for deploying the Google Docs Comment Exporter across medium-sized organizations (50-500 people). The deployment playbooks, guides, and templates are freely available under the MIT License.
+- Exports all document comments to a `.md` file
+- Includes comment threads, authors, and timestamps
+- Shows quoted text with surrounding context
+- Perfect for AI analysis (Claude, ChatGPT)
+- Creates beautiful download dialog
 
-## Overview
+## Installation (5 minutes)
 
-The Google Docs Comment Exporter is a lightweight Apps Script tool that extracts all comments from a Google Doc and exports them as a clean, structured markdown file. Perfect for:
+1. **Open your Google Doc**
 
-- Preparing document feedback for AI analysis (Claude, ChatGPT, etc.)
-- Creating comment archives for review cycles
-- Extracting discussion threads from collaborative documents
-- Generating stakeholder feedback summaries
+2. **Extensions → Apps Script**
+
+3. **Delete the default code**
+
+4. **Copy and paste** the code from [`src/comment-exporter-MARKDOWN.js`](src/comment-exporter-MARKDOWN.js)
+
+5. **Add Drive API:**
+   - Click ⊕ next to "Services" in the left sidebar
+   - Find "Drive API" → select version **v3** → Add
+
+6. **Save** (💾 icon or Cmd/Ctrl+S)
+
+7. **Refresh your Google Doc** (Cmd/Ctrl+R)
+
+8. **Look for the "💬 Comment Exporter" menu** in your doc
+
+Done! ✅
+
+## Usage
+
+Click **💬 Comment Exporter** in your menu:
+
+- **Export All Comments** - Everything (including resolved)
+- **Export Open Comments Only** - Just unresolved comments (AI-ready with prompt template)
+- **Export to Organized Folder** - Save to "Comment Exports" folder
+- **Custom Export Settings** - Adjust context size and filters
+
+The script creates a `.md` file in your Google Drive and shows a download dialog.
 
 ## Features
 
-- **Two Export Modes:**
-  - Export all comments (including resolved)
-  - Export only open/unresolved comments
+### Two Export Modes
 
-- **AI-Optimized Format:**
-  - Clean markdown structure
-  - Preserves comment context and threading
-  - Includes author names and timestamps
-  - Shows quoted text from document
+**All Comments:**
+```markdown
+# Comments from: Your Document
 
-- **User-Friendly:**
-  - Custom menu in Google Docs
-  - Automatic file creation in Google Drive
-  - Styled download dialog with one-click access
-  - No external dependencies
+## Comment #1 - John Doe
+**Date:** 2/18/2026
+**Status:** ✓ Resolved
 
-## Quick Start
+**Document Context:**
+_...previous text:_ background about the topic
 
-1. **For End Users:** See [Installation Guide](docs/installation-guide.md) for step-by-step setup
-2. **For IT Teams:** See [IT Setup Guide](docs/it-setup-guide.md) for technical deployment
-3. **For Using the Tool:** See [User Guide](docs/user-guide.md) for export instructions
+**→ Referenced Text:**
+> This is the text being commented on
 
-## Documentation
+**Comment:**
+Great point! We should expand this section.
 
-- **[Installation Guide](docs/installation-guide.md)** - Step-by-step installation for end users
-- **[User Guide](docs/user-guide.md)** - How to use the exporter, tips, and best practices
-- **[IT Setup Guide](docs/it-setup-guide.md)** - Technical setup for IT teams (Phase 1 & 2)
-- **[IT Deployment Guide](docs/it-deployment-guide.md)** - Complete organizational rollout playbook (optional)
-
-## Project Structure
-
-```
-google-doc-comment-export/
-├── src/
-│   ├── comment-exporter-MARKDOWN.js    # Main script (copy to Apps Script)
-│   └── appsscript.json                 # Add-on manifest (Phase 2)
-├── docs/
-│   ├── installation-guide.md           # End-user installation (Phase 1)
-│   ├── user-guide.md                   # How to use the exporter
-│   ├── it-setup-guide.md              # IT technical setup (Phase 1 & 2)
-│   └── it-deployment-guide.md          # Full rollout playbook (optional)
-├── examples/
-│   ├── export-dialog.html              # Reference: styled download dialog
-│   └── *.js                            # Legacy versions for reference
-└── README.md                           # This file
+**Discussion (2 replies):**
+- **Jane Smith** (2/18/2026): Agreed, adding more details now
+- **John Doe** (2/18/2026) [Resolved]: Perfect!
 ```
 
-## Deployment Phases
+**Open Comments Only:**
+Includes an AI prompt template to help analyze and address feedback.
 
-### Phase 1: Manual Installation (Current)
-- Users install script per document
-- ~5-10 minute setup time
-- Full control over which documents have the tool
-- See [Installation Guide](docs/installation-guide.md)
+### Smart Features
 
-### Phase 2: Google Workspace Add-on (Planned)
-- One-time installation by IT admin
-- Automatic deployment across organization
-- Zero user setup required
-- Available in all Google Docs automatically
+- Comments sorted by position in document (top to bottom)
+- Shows 200 characters before/after quoted text for context
+- Includes reply threads and resolve/reopen actions
+- Beautiful animated download dialog
+- Files auto-named with document name and timestamp
 
-## Technical Details
+## Use Cases
 
-- **Platform:** Google Apps Script
-- **Dependencies:** Google Drive API v3
-- **Triggers:** Custom menu on document open
-- **Permissions Required:**
-  - Read access to current document
-  - Write access to Google Drive (for export files)
+- **AI Analysis:** Paste into Claude/ChatGPT to summarize feedback
+- **Action Items:** Extract todos from open comments
+- **Archives:** Save discussion history before resolving
+- **Reports:** Create stakeholder feedback summaries
 
-## Support
+## Example AI Prompt
 
-- **Documentation:** See `/docs` folder for comprehensive guides
-- **Issues:** [Open an issue](https://github.com/austin-reece-gladly/google-docs-comment-exporter-deployment/issues) on GitHub
-- **Questions:** [Start a discussion](https://github.com/austin-reece-gladly/google-docs-comment-exporter-deployment/discussions)
-- **Feature Requests:** Submit via GitHub issues
+After exporting, paste the markdown into an AI and ask:
 
-## Version History
+```
+Analyze these document comments and:
+1. Summarize key themes
+2. Identify conflicting feedback
+3. Extract action items by priority
+4. Suggest how to address each comment
+```
 
-- **v1.0** - Initial markdown exporter with dual export modes
-  - Clean markdown output optimized for AI tools
-  - Styled download dialog with Google Drive integration
-  - Complete deployment documentation and strategy
+## Troubleshooting
+
+**Menu doesn't appear?**
+- Refresh the page (Cmd/Ctrl+R)
+- Close and reopen the document
+
+**"Access denied: Drive" error?**
+- You didn't add Drive API v3 in step 5
+- Go to Apps Script → Services → Add Drive API v3 → Save
+
+**Authorization popup?**
+- Click "Continue"
+- Click "Advanced" → "Go to [Project] (unsafe)" - this is your own script
+- Click "Allow"
+- This only happens once
+
+## Advanced: Deploy as Workspace Add-on
+
+Want to make this available to your entire organization automatically?
+
+1. Create a Google Cloud Project
+2. Copy `src/appsscript.json` as the add-on manifest
+3. Deploy as Google Workspace Add-on
+4. Submit to Marketplace (private/domain-only)
+5. IT admin installs once for entire organization
+
+See [`src/appsscript.json`](src/appsscript.json) for the add-on configuration.
+
+## Files
+
+- **[src/comment-exporter-MARKDOWN.js](src/comment-exporter-MARKDOWN.js)** - Main script (copy this!)
+- **[src/appsscript.json](src/appsscript.json)** - Add-on manifest (for org deployment)
+- **[LICENSE](LICENSE)** - MIT License
 
 ## Contributing
 
-Contributions are welcome! This project includes:
-- Deployment strategies and playbooks
-- Installation and user guides
-- Email templates and communication plans
-- Success metrics frameworks
+Contributions welcome! This is a simple, focused tool. Keep it that way.
 
-Feel free to:
-- Submit improvements to documentation
-- Share your deployment experiences
-- Suggest enhancements to the rollout strategy
-- Report issues or gaps in the guides
+- Fix bugs
+- Improve documentation
+- Suggest UX improvements
+- Share use cases
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) file for details.
-
-Copyright (c) 2026 Austin Reece
+MIT License - use it however you want.
 
 ---
 
-**Purpose:** Deployment framework for scaling across 50-500 person organizations
-**Last Updated:** February 2026
+**Made with ❤️ for better document reviews**
