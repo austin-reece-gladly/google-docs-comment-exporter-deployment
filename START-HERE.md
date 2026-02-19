@@ -87,7 +87,6 @@ Scales a working Google Docs comment exporter from individual use to company-wid
 ✅ **9 comprehensive documentation files** (15,000 words)
 ✅ **Complete deployment playbook** (week-by-week guide)
 ✅ **Email templates** for rollout campaign
-✅ **Video tutorial script** (5 minutes)
 ✅ **Support infrastructure plan**
 ✅ **Metrics and tracking framework**
 ✅ **Phase 2 technical foundation** (add-on manifest ready)
@@ -100,7 +99,7 @@ Scales a working Google Docs comment exporter from individual use to company-wid
 ## ⏱️ Timeline Overview
 
 ```
-Week -1:  Pre-launch setup (wiki, video, training)
+Week -1:  Pre-launch setup (wiki, training)
 Week 1-2: Pilot program (10-15 users)
 Week 3:   Department beta (20-50 users)
 Week 4-6: Company-wide rollout
@@ -139,9 +138,8 @@ Month 3+: Phase 2 - Add-on (if approved)
 ### Next Week (Pre-Launch)
 
 7. ⬜ Create internal wiki page (4 hours)
-8. ⬜ Record video tutorial (4-6 hours)
-9. ⬜ Set up support infrastructure (3 hours)
-10. ⬜ Train IT support team (2 hours)
+8. ⬜ Set up support infrastructure (3 hours)
+9. ⬜ Train IT support team (2 hours)
 
 ### Week After Next
 

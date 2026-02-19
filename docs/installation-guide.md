@@ -194,7 +194,7 @@ Now that you've installed the tool, learn how to use it:
 
 - **IT Support:** Contact your IT help desk
 - **Internal Wiki:** Check the Comment Exporter page for FAQs
-- **Video Tutorial:** [Link to internal training video]
+- **GitHub Documentation:** Full guides and troubleshooting available
 
 ---
 

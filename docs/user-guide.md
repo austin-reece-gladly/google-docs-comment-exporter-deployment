@@ -536,7 +536,7 @@ We want to make this tool better!
 **Support:**
 - Wiki: [Link]
 - Slack: #comment-exporter
-- Video: [Link]
+- GitHub: Full documentation
 
 ---
 

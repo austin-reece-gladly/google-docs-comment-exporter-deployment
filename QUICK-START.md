@@ -86,7 +86,6 @@ A markdown file saved to your Google Drive:
 
 - **Wiki:** [YOUR COMPANY WIKI LINK]
 - **Slack:** #comment-exporter
-- **Video Tutorial:** [YOUR VIDEO LINK]
 - **IT Support:** [YOUR SUPPORT EMAIL]
 
 ---

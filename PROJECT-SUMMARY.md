@@ -45,7 +45,6 @@ This project provides a complete deployment package to scale the Google Docs Com
 
 All documentation includes:
 - ✅ Step-by-step instructions with troubleshooting
-- ✅ Video tutorial script (5 minutes)
 - ✅ Email templates for rollout communications
 - ✅ Survey templates for feedback collection
 - ✅ Success metrics and tracking framework
@@ -202,7 +201,6 @@ google-doc-comment-export/
 
 **Pre-Launch Setup (1-2 weeks):**
 - Wiki page creation: 4 hours
-- Video recording and editing: 4-6 hours
 - Support channel setup: 2 hours
 - IT team training: 2 hours
 - Survey creation: 1 hour
@@ -244,7 +242,6 @@ google-doc-comment-export/
 **Recommended:**
 - 1 Project manager (track rollout, communications)
 - 1-2 IT staff (technical support)
-- 1 Technical writer (video creation, doc updates)
 - 3-5 Department champions (peer support)
 
 ### Tools Needed
@@ -253,7 +250,6 @@ google-doc-comment-export/
 - Company wiki (Confluence, Notion, SharePoint, etc.)
 - Email distribution system
 - Chat platform (Slack, Teams, etc.)
-- Video hosting (YouTube, Vimeo, internal)
 
 **Tracking:**
 - Survey tool (Google Forms, Typeform, etc.)
@@ -323,7 +319,6 @@ google-doc-comment-export/
 **Probability:** Low (mitigated by excellent docs)
 **Impact:** High
 **Mitigation:**
-- Video tutorial reduces confusion
 - Live office hours for hands-on help
 - Simplified quick-start guide
 - Iterative documentation improvement based on feedback
@@ -432,7 +427,6 @@ Need help installing the Comment Exporter? Join us for live support:
 
 Drop in anytime, we'll help you get set up in 5 minutes.
 
-Can't make it? Watch the video guide: [Link]
 
 - IT Team
 ```
@@ -448,7 +442,6 @@ Can't make it? Watch the video guide: [Link]
    - Create wiki page
    - Set up support channel
    - Create shared Drive folder
-3. **Record video tutorial** - Use script from IT deployment guide
 4. **Train IT support team** - Review common issues and solutions
 
 ### Week 1-2 (Pilot)
@@ -491,7 +484,6 @@ Can't make it? Watch the video guide: [Link]
 **Prerequisites:**
 - [ ] All documentation reviewed and approved
 - [ ] Wiki page live and tested
-- [ ] Video tutorial recorded
 - [ ] Support channel created
 - [ ] IT team trained
 - [ ] Pilot users identified
@@ -601,7 +593,7 @@ All project files with descriptions:
 ### B. Timeline at a Glance
 
 ```
-Week -1: Pre-launch setup (wiki, video, training)
+Week -1: Pre-launch setup (wiki, training)
 Week 1-2: Pilot (10-15 users)
 Week 3: Beta (20-50 users, one department)
 Week 4: Company launch

@@ -23,7 +23,6 @@
 - [ ] Create internal wiki page
   - [ ] Copy installation guide content
   - [ ] Add "copy to clipboard" button for script
-  - [ ] Embed video tutorial (once created)
   - [ ] Add FAQ section
   - [ ] Link to support channel
 - [ ] Set up shared Google Drive folder
@@ -35,17 +34,9 @@
 - [ ] Create support channel
   - [ ] Slack: #comment-exporter (or Teams equivalent)
   - [ ] Pin installation guide link
-  - [ ] Pin video tutorial link
   - [ ] Set channel description
   - [ ] Add IT support team as members
 
-### Video Tutorial
-- [ ] Record 5-minute installation walkthrough
-  - [ ] Follow video script from IT deployment guide
-  - [ ] Show each installation step clearly
-  - [ ] Demonstrate first export
-  - [ ] Show common troubleshooting scenarios
-- [ ] Edit and add captions
 - [ ] Upload to internal platform (YouTube, Vimeo, etc.)
 - [ ] Test video playback and accessibility
 - [ ] Add video link to all documentation
