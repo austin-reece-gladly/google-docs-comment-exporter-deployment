@@ -11,9 +11,18 @@
  */
 
 /**
+ * Check if the document supports the Tabs API
+ */
+function supportsTabsApi(doc) {
+  return typeof doc.getTabs === 'function';
+}
+
+/**
  * Get all tabs from a document, flattened (includes nested child tabs)
+ * Returns empty array if Tabs API is not available
  */
 function getAllTabs(doc) {
+  if (!supportsTabsApi(doc)) return [];
   var allTabs = [];
   var topTabs = doc.getTabs();
   for (var i = 0; i < topTabs.length; i++) {
@@ -31,9 +40,12 @@ function collectTabs(tab, allTabs) {
 }
 
 /**
- * Get body text for a specific tab, or all tabs concatenated
+ * Get body text for a specific tab, or the full document body
  */
 function getTabBodyText(doc, tabId) {
+  if (!supportsTabsApi(doc)) {
+    return doc.getBody().getText();
+  }
   if (!tabId || tabId === 'all') {
     var tabs = getAllTabs(doc);
     return tabs.map(function(tab) {
@@ -460,7 +472,7 @@ function unifiedExport(tabId, includeOpen, includeResolved, includeDeleted, incl
 
   // Determine tab name for the header
   var tabName = 'All Tabs';
-  if (tabId !== 'all') {
+  if (tabId !== 'all' && supportsTabsApi(doc)) {
     var tab = doc.getTab(tabId);
     tabName = tab.getTitle();
   }
