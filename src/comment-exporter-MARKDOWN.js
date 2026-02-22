@@ -10,6 +10,40 @@
  * 5. Check Execution log for Google Doc URL
  */
 
+/**
+ * Get all tabs from a document, flattened (includes nested child tabs)
+ */
+function getAllTabs(doc) {
+  var allTabs = [];
+  var topTabs = doc.getTabs();
+  for (var i = 0; i < topTabs.length; i++) {
+    collectTabs(topTabs[i], allTabs);
+  }
+  return allTabs;
+}
+
+function collectTabs(tab, allTabs) {
+  allTabs.push(tab);
+  var children = tab.getChildTabs();
+  for (var i = 0; i < children.length; i++) {
+    collectTabs(children[i], allTabs);
+  }
+}
+
+/**
+ * Get body text for a specific tab, or all tabs concatenated
+ */
+function getTabBodyText(doc, tabId) {
+  if (!tabId || tabId === 'all') {
+    var tabs = getAllTabs(doc);
+    return tabs.map(function(tab) {
+      return tab.asDocumentTab().getBody().getText();
+    }).join('\n');
+  }
+  var tab = doc.getTab(tabId);
+  return tab.asDocumentTab().getBody().getText();
+}
+
 function exportCommentsToMarkdown(contextChars) {
   contextChars = contextChars || 200; // Default to 200 characters
 
@@ -249,15 +283,17 @@ function exportCommentsToMarkdown(contextChars) {
 /**
  * Get surrounding context from document for better AI understanding
  */
-function getSurroundingContext(quotedText, contextChars) {
+function getSurroundingContext(quotedText, contextChars, fullText) {
   if (!quotedText) return null;
 
   contextChars = contextChars || 150; // Default 150 chars before/after
 
   try {
-    var doc = DocumentApp.getActiveDocument();
-    var body = doc.getBody();
-    var fullText = body.getText();
+    if (!fullText) {
+      var doc = DocumentApp.getActiveDocument();
+      var body = doc.getBody();
+      fullText = body.getText();
+    }
 
     // Find the quoted text in the document
     var index = fullText.indexOf(quotedText);
@@ -283,6 +319,17 @@ function getSurroundingContext(quotedText, contextChars) {
     Logger.log('Could not get context: ' + e.toString());
     return null;
   }
+}
+
+/**
+ * Filter comments to only those whose quoted text appears in the given body text
+ */
+function filterCommentsByTab(comments, tabBodyText) {
+  return comments.filter(function(comment) {
+    var quotedText = (comment.quotedFileContent && comment.quotedFileContent.value) ? comment.quotedFileContent.value : '';
+    if (!quotedText) return false;
+    return tabBodyText.indexOf(quotedText) !== -1;
+  });
 }
 
 /**
@@ -994,6 +1041,513 @@ function exportOpenCommentsToMarkdownInFolder(folder, contextChars) {
 }
 
 /**
+ * Entry point for tab-specific export
+ */
+function exportFromTab() {
+  var doc = DocumentApp.getActiveDocument();
+  var tabs = getAllTabs(doc);
+
+  if (tabs.length <= 1) {
+    // Only one tab — use standard export
+    exportCommentsToMarkdown(200);
+    return;
+  }
+
+  // Build tab info for the dialog
+  var tabInfo = tabs.map(function(tab) {
+    return { id: tab.getId(), title: tab.getTitle() };
+  });
+
+  showTabSelectionDialog(tabInfo);
+}
+
+/**
+ * Show tab selection dialog
+ */
+function showTabSelectionDialog(tabInfo) {
+  var ui = DocumentApp.getUi();
+
+  var tabRadios = tabInfo.map(function(tab) {
+    return '<label class="tab-option">' +
+      '<input type="radio" name="tab" value="' + tab.id + '">' +
+      '<span class="tab-label">' + tab.title + '</span>' +
+      '</label>';
+  }).join('\n        ');
+
+  var html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=DM+Sans:wght@400;500;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: #ffffff;
+      color: #1a1a1a;
+    }
+
+    .container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .header-accent {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #2d6a4f 0%, #52b788 50%, #2d6a4f 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% { background-position: 0% 0%; }
+      50% { background-position: 100% 0%; }
+    }
+
+    .header {
+      padding: 24px 32px 16px;
+      border-bottom: 1px solid #e9ecef;
+      background: linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .header h1 {
+      font-family: 'Crimson Pro', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .header p {
+      font-size: 13px;
+      color: #6c757d;
+    }
+
+    .content {
+      padding: 20px 32px;
+    }
+
+    .tab-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .tab-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .tab-option:hover {
+      border-color: #52b788;
+      background: #f8fdf9;
+    }
+
+    .tab-option input[type="radio"] {
+      accent-color: #2d6a4f;
+      width: 16px;
+      height: 16px;
+    }
+
+    .tab-option input[type="radio"]:checked + .tab-label {
+      color: #2d6a4f;
+      font-weight: 600;
+    }
+
+    .tab-label {
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .export-type {
+      margin-bottom: 20px;
+    }
+
+    .export-type-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #6c757d;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .export-type select {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: #1a1a1a;
+      background: #ffffff;
+      cursor: pointer;
+    }
+
+    .export-type select:focus {
+      outline: none;
+      border-color: #52b788;
+    }
+
+    .footer {
+      padding: 16px 32px 20px;
+      border-top: 1px solid #e9ecef;
+    }
+
+    .export-button {
+      width: 100%;
+      padding: 11px 24px;
+      background: linear-gradient(135deg, #2d6a4f 0%, #40916c 100%);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(45, 106, 79, 0.2);
+    }
+
+    .export-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(45, 106, 79, 0.28);
+    }
+
+    .export-button:active {
+      transform: translateY(0);
+    }
+
+    .export-button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header-accent"></div>
+    <div class="header">
+      <h1>Export from Tab</h1>
+      <p>Choose which tab to export comments from</p>
+    </div>
+
+    <div class="content">
+      <div class="tab-list">
+        <label class="tab-option">
+          <input type="radio" name="tab" value="all" checked>
+          <span class="tab-label">All Tabs</span>
+        </label>
+        ${tabRadios}
+      </div>
+
+      <div class="export-type">
+        <div class="export-type-label">Export type</div>
+        <select id="exportType">
+          <option value="all">All Comments</option>
+          <option value="open">Open Comments Only (AI-ready)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="footer">
+      <button class="export-button" id="exportBtn" onclick="doExport()">Export Comments</button>
+    </div>
+  </div>
+
+  <script>
+    function doExport() {
+      var selected = document.querySelector('input[name="tab"]:checked');
+      if (!selected) return;
+
+      var tabId = selected.value;
+      var exportType = document.getElementById('exportType').value;
+      var btn = document.getElementById('exportBtn');
+      btn.disabled = true;
+      btn.textContent = 'Exporting...';
+
+      google.script.run
+        .withSuccessHandler(function() {
+          google.script.host.close();
+        })
+        .withFailureHandler(function(err) {
+          btn.disabled = false;
+          btn.textContent = 'Export Comments';
+          alert('Export failed: ' + err.message);
+        })
+        .exportFromSelectedTab(tabId, exportType);
+    }
+  </script>
+</body>
+</html>
+  `;
+
+  var htmlOutput = HtmlService.createHtmlOutput(html)
+    .setWidth(420)
+    .setHeight(480);
+
+  ui.showModalDialog(htmlOutput, ' ');
+}
+
+/**
+ * Server callback from tab selection dialog
+ */
+function exportFromSelectedTab(tabId, exportType) {
+  var contextChars = 200;
+  var doc = DocumentApp.getActiveDocument();
+  var docId = doc.getId();
+  var docName = doc.getName();
+
+  // Get the body text for the selected tab
+  var tabBodyText = getTabBodyText(doc, tabId);
+
+  // Determine tab name for the header
+  var tabName = 'All Tabs';
+  if (tabId !== 'all') {
+    var tab = doc.getTab(tabId);
+    tabName = tab.getTitle();
+  }
+
+  Logger.log('Exporting from tab: ' + tabName);
+
+  try {
+    var response = Drive.Comments.list(docId, {
+      fields: 'comments(id,author(displayName),content,quotedFileContent(value),createdTime,modifiedTime,resolved,replies(id,author(displayName),content,createdTime,modifiedTime,deleted,action))',
+      includeDeleted: false,
+      pageSize: 100
+    });
+
+    var comments = response.comments || [];
+
+    // Filter by tab if a specific tab was selected
+    if (tabId !== 'all') {
+      comments = filterCommentsByTab(comments, tabBodyText);
+    }
+
+    // Filter by resolution status if open-only
+    if (exportType === 'open') {
+      comments = comments.filter(function(c) { return !c.resolved; });
+    }
+
+    if (comments.length === 0) {
+      DocumentApp.getUi().alert('No comments found for the selected tab and filter.');
+      return;
+    }
+
+    Logger.log('Found ' + comments.length + ' comment(s) for tab: ' + tabName);
+
+    // Enrich comments with context and position
+    var enrichedComments = comments.map(function(comment) {
+      var quotedText = (comment.quotedFileContent && comment.quotedFileContent.value) ? comment.quotedFileContent.value : '';
+      var context = getSurroundingContext(quotedText, contextChars, tabBodyText);
+
+      return {
+        comment: comment,
+        context: context,
+        position: context ? context.position : 999999
+      };
+    });
+
+    enrichedComments.sort(function(a, b) {
+      return a.position - b.position;
+    });
+
+    // Build markdown
+    var markdown = [];
+    var isOpenOnly = (exportType === 'open');
+
+    if (isOpenOnly) {
+      markdown.push('# Open Comments from: ' + docName);
+    } else {
+      markdown.push('# Comments from: ' + docName);
+    }
+    markdown.push('');
+    markdown.push('**Generated:** ' + new Date().toLocaleString());
+    markdown.push('**Tab:** ' + tabName);
+    markdown.push('**Total Comments:** ' + comments.length);
+    markdown.push('**Sort Order:** Top to bottom of document');
+    markdown.push('');
+
+    if (isOpenOnly) {
+      markdown.push('---');
+      markdown.push('');
+      markdown.push('# AI Prompt');
+      markdown.push('');
+      markdown.push('Please help me address the following comments on my document. For each comment:');
+      markdown.push('1. Analyze the feedback in context');
+      markdown.push('2. Suggest specific revisions to the referenced text');
+      markdown.push('3. Provide the revised text that incorporates the feedback');
+      markdown.push('4. Explain your reasoning');
+      markdown.push('');
+      markdown.push('The comments are presented in order from top to bottom of the document.');
+      markdown.push('Each comment includes surrounding context to help you understand the full picture.');
+      markdown.push('');
+    } else {
+      markdown.push('_Comments are ordered by their position in the document and include surrounding context._');
+      markdown.push('');
+    }
+
+    markdown.push('---');
+    markdown.push('');
+
+    var openCount = 0;
+    var resolvedCount = 0;
+
+    enrichedComments.forEach(function(item, index) {
+      var comment = item.comment;
+      var context = item.context;
+      var commentNum = index + 1;
+      var author = (comment.author && comment.author.displayName) ? comment.author.displayName : 'Unknown';
+      var content = comment.content || '';
+      var quotedText = (comment.quotedFileContent && comment.quotedFileContent.value) ? comment.quotedFileContent.value : '';
+      var createdTime = comment.createdTime || '';
+      var resolved = comment.resolved || false;
+      var replies = comment.replies || [];
+
+      if (resolved) { resolvedCount++; } else { openCount++; }
+
+      var dateStr = '';
+      if (createdTime) {
+        try { dateStr = new Date(createdTime).toLocaleDateString(); } catch(e) { dateStr = createdTime; }
+      }
+
+      markdown.push('## Comment #' + commentNum + ' - ' + author);
+      if (dateStr) { markdown.push('**Date:** ' + dateStr); }
+      if (!isOpenOnly) {
+        markdown.push('**Status:** ' + (resolved ? '✓ Resolved' : '⚠️ Open'));
+      }
+      markdown.push('');
+
+      if (context) {
+        markdown.push('**Document Context:**');
+        markdown.push('');
+        if (context.before) {
+          if (isOpenOnly) {
+            markdown.push('_[...previous text]_');
+            markdown.push(context.before);
+          } else {
+            markdown.push('_...previous text:_ ' + context.before);
+          }
+          markdown.push('');
+        }
+        markdown.push('**→ Referenced Text (being commented on):**');
+        markdown.push('> ' + context.quoted.replace(/\n/g, '\n> '));
+        markdown.push('');
+        if (context.after) {
+          if (isOpenOnly) {
+            markdown.push('_[...following text]_');
+            markdown.push(context.after);
+          } else {
+            markdown.push('_...following text:_ ' + context.after);
+          }
+          markdown.push('');
+        }
+      } else if (quotedText) {
+        markdown.push('**Referenced Text:**');
+        markdown.push('> ' + quotedText.replace(/\n/g, '\n> '));
+        markdown.push('');
+      }
+
+      markdown.push('**Comment:**');
+      markdown.push(content);
+      markdown.push('');
+
+      if (replies.length > 0) {
+        markdown.push('**Discussion (' + replies.length + ' ' + (replies.length === 1 ? 'reply' : 'replies') + '):**');
+        markdown.push('');
+
+        replies.forEach(function(reply) {
+          if (reply.deleted) return;
+          var replyAuthor = (reply.author && reply.author.displayName) ? reply.author.displayName : 'Unknown';
+          var replyContent = reply.content || '';
+          var replyTime = reply.createdTime || '';
+          var action = reply.action || '';
+
+          var replyDateStr = '';
+          if (replyTime) {
+            try { replyDateStr = new Date(replyTime).toLocaleDateString(); } catch(e) { replyDateStr = replyTime; }
+          }
+
+          var actionStr = '';
+          if (action === 'resolve') { actionStr = ' [Resolved this comment]'; }
+          else if (action === 'reopen') { actionStr = ' [Reopened this comment]'; }
+
+          if (isOpenOnly) {
+            markdown.push('- **' + replyAuthor + '**: ' + replyContent.replace(/\n/g, '\n  '));
+          } else {
+            markdown.push('- **' + replyAuthor + '** (' + replyDateStr + ')' + actionStr + ':');
+            if (replyContent) { markdown.push('  ' + replyContent.replace(/\n/g, '\n  ')); }
+          }
+          markdown.push('');
+        });
+      }
+
+      if (isOpenOnly) {
+        markdown.push('**AI Response:**');
+        markdown.push('');
+        markdown.push('_[AI will provide suggestions here]_');
+        markdown.push('');
+      }
+
+      markdown.push('---');
+      markdown.push('');
+    });
+
+    // Summary
+    if (!isOpenOnly) {
+      markdown.push('');
+      markdown.push('## Summary');
+      markdown.push('');
+      markdown.push('- **Total Comments:** ' + comments.length);
+      markdown.push('- **Open Comments:** ' + openCount);
+      markdown.push('- **Resolved Comments:** ' + resolvedCount);
+      markdown.push('');
+    }
+
+    markdown.push('---');
+    markdown.push('');
+    markdown.push('*Generated with Google Apps Script Comment Exporter*');
+
+    var markdownText = markdown.join('\n');
+
+    // Create file
+    var tabSlug = (tabId !== 'all') ? tabName.replace(/[^a-z0-9]/gi, '-') + '-' : '';
+    var prefix = isOpenOnly ? 'Open-Comments-AI-Ready-' : 'Comments-';
+    var fileName = prefix + tabSlug + docName.replace(/[^a-z0-9]/gi, '-') + '.md';
+    var file = DriveApp.createFile(fileName, markdownText, MimeType.PLAIN_TEXT);
+
+    var fileId = file.getId();
+    var downloadUrl = 'https://drive.google.com/uc?export=download&id=' + fileId;
+
+    Logger.log('✓ Exported ' + comments.length + ' comments from tab: ' + tabName);
+    Logger.log('File: ' + fileName);
+
+    showDownloadDialog(downloadUrl, fileName, comments.length);
+
+  } catch (error) {
+    Logger.log('✗ ERROR: ' + error.toString());
+    Logger.log('Stack trace: ' + error.stack);
+    throw error;
+  }
+}
+
+/**
  * Creates custom menu
  */
 function onOpen() {
@@ -1001,6 +1555,7 @@ function onOpen() {
     .createMenu('💬 Comment Exporter')
     .addItem('📝 Export All Comments (.md file)', 'exportCommentsToMarkdown')
     .addItem('⚠️ Export Open Comments Only (.md file)', 'exportOpenCommentsToMarkdown')
+    .addItem('📑 Export from Specific Tab...', 'exportFromTab')
     .addSeparator()
     .addItem('📁 Export to Organized Folder', 'exportToFolder')
     .addItem('⚙️ Custom Export Settings...', 'exportWithCustomSettings')
